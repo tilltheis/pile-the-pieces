@@ -77,10 +77,10 @@ var Field = function() {
     this.height = 20;
 
     this.reset = function() {
-	var w = this.width, h = this.height;
-	var blocks = this.blocks;
+        var w = this.width, h = this.height;
+        var blocks = this.blocks;
 
-	var i, j;
+        var i, j;
         for (i = 0; i < h; ++i) {
             blocks[i] = [];
             blocks[i].length = w;
@@ -89,14 +89,14 @@ var Field = function() {
             }
         }
 
-	eventManager.emit('reset');
+        eventManager.emit('reset');
     };
 
     this.getFullRows = function() {
         var i, j, isFullRow;
-	var rows = [];
-	var blocks = this.blocks;
-	var w = this.width, h = this.height;
+        var rows = [];
+        var blocks = this.blocks;
+        var w = this.width, h = this.height;
 
         for (i = 0; i < h; ++i) {
             isFullRow = true;
@@ -113,14 +113,14 @@ var Field = function() {
             }
         }
 
-	return rows;
+    return rows;
     };
 
 
     this.clearRow = function(row) {
         var i, j;
-	var w = this.width;
-	var blocks = this.blocks;
+    var w = this.width;
+    var blocks = this.blocks;
 
         for (i = row; i > 0; --i) {
             for (j = 0; j < w; ++j) {
@@ -132,15 +132,15 @@ var Field = function() {
             blocks[0][j] = null;
         }
 
-	eventManager.emit('clearRow');
+    eventManager.emit('clearRow');
     };
 
     
     (function() {
-	eventManager.registerEvent('reset', self);
-	eventManager.registerEvent('clearRow', self);
+    eventManager.registerEvent('reset', self);
+    eventManager.registerEvent('clearRow', self);
 
-	self.reset();
+    self.reset();
     }());
 };
 
@@ -204,13 +204,13 @@ var countFirstEmptyRowsOfShapeMask = function(mask) {
     var count = 0;
 
     for (i = 0; i < size; ++i) {
-	for (j = 0; j < size; ++j) {
+        for (j = 0; j < size; ++j) {
             if (mask[i][j]) {
-		return count;
+                return count;
             }
-	}
+        }
 
-	count += 1;
+        count += 1;
     }
 
     return count;
@@ -227,11 +227,11 @@ var Piece = function(field, shape) {
 
 
     this.state = {
-	position: {
-	    x: 0,
-	    y: 0
-	},
-	rotation: 0
+        position: {
+            x: 0,
+            y: 0
+        },
+        rotation: 0
     };
 
   
@@ -244,7 +244,7 @@ var Piece = function(field, shape) {
 
         this.state.rotation = (this.state.rotation + angle) % 360;
 
-	eventManager.emit('rotate');
+        eventManager.emit('rotate');
     };
     
     this.canRotate = function(direction) {
@@ -264,18 +264,18 @@ var Piece = function(field, shape) {
 
     this.move = function(direction) {
         switch (direction) {
-            case 'left':  this.state.position.x -= 1; break;
-            case 'right': this.state.position.x += 1; break;
-            case 'down':  this.state.position.y += 1; break;
-            default: throw 'Piece::canMove: Invalid direction argument (' + direction + ')';
+        case 'left':  this.state.position.x -= 1; break;
+        case 'right': this.state.position.x += 1; break;
+        case 'down':  this.state.position.y += 1; break;
+        default: throw 'Piece::canMove: Invalid direction argument (' + direction + ')';
         }
 
-	eventManager.emit('move');
+        eventManager.emit('move');
     };
 
 
     this.canMove = function(direction) {
-	var oldPosition = this.state.position;
+        var oldPosition = this.state.position;
 
         var newState = {
             position: {
@@ -286,21 +286,21 @@ var Piece = function(field, shape) {
         };
 
         switch (direction) {
-            case 'left':  newState.position.x -= 1; break;
-            case 'right': newState.position.x += 1; break;
-            case 'down':  newState.position.y += 1; break;
-            default: throw 'Piece::canMove: Invalid direction argument (' + direction + ')';
+        case 'left':  newState.position.x -= 1; break;
+        case 'right': newState.position.x += 1; break;
+        case 'down':  newState.position.y += 1; break;
+        default: throw 'Piece::canMove: Invalid direction argument (' + direction + ')';
         }
 
         return !isCollision(newState);
     };
 
     this.hardDrop = function() {
-	while (this.canMove('down')) {
-	    this.state.position.y += 1;
-	}
+        while (this.canMove('down')) {
+            this.state.position.y += 1;
+        }
 
-	eventManager.emit('hardDrop');
+        eventManager.emit('hardDrop');
     };
 
     this.mergeWithField = function() {
@@ -308,10 +308,10 @@ var Piece = function(field, shape) {
 
         var mask = rotateShapeMask(shape.mask, this.state.rotation);
 
-	var size = shape.size;
-	var position = this.state.position;
-	var blocks = field.blocks;
-	var id = shape.name;
+        var size = shape.size;
+        var position = this.state.position;
+        var blocks = field.blocks;
+        var id = shape.name;
 
         for (i = 0; i < size; ++i) {
             for (j = 0; j < size; ++j) {
@@ -326,7 +326,7 @@ var Piece = function(field, shape) {
             }
         }
 
-	eventManager.emit('mergeWithField');
+        eventManager.emit('mergeWithField');
     };
 
 
@@ -336,10 +336,10 @@ var Piece = function(field, shape) {
 
         var mask = rotateShapeMask(shape.mask, state.rotation);
         var size = shape.size;
-	var blocks = field.blocks;
-	var w = field.width, h = field.height;
-	var position = state.position;
-	var posX = position.x, posY = position.y;
+        var blocks = field.blocks;
+        var w = field.width, h = field.height;
+        var position = state.position;
+        var posX = position.x, posY = position.y;
 
         var numEmptyRows = countFirstEmptyRowsOfShapeMask(mask);
 
@@ -365,32 +365,32 @@ var Piece = function(field, shape) {
 
 
     (function() {
-	var countLastEmptyRowsOfShapeMask = function(mask) {
+        var countLastEmptyRowsOfShapeMask = function(mask) {
             var i, j;
             var size = mask.length;
             var count = 0;
 
             for (i = size - 1; i >= 0; --i) {
-		for (j = 0; j < size; ++j) {
+                for (j = 0; j < size; ++j) {
                     if (mask[i][j]) {
-			return count;
+                        return count;
                     }
-		}
+                }
 
-		count += 1;
+                count += 1;
             }
 
             return count;
-	};
+        };
 
-	var position = self.state.position;
-	position.x = parseInt(field.width / 2 - shape.size / 2, 10);
-	position.y = 0 - shape.size + countLastEmptyRowsOfShapeMask(shape.mask);
+        var position = self.state.position;
+        position.x = parseInt(field.width / 2 - shape.size / 2, 10);
+        position.y = 0 - shape.size + countLastEmptyRowsOfShapeMask(shape.mask);
 
-	eventManager.registerEvent('rotate', self);
-	eventManager.registerEvent('move', self);
-	eventManager.registerEvent('hardDrop', self);
-	eventManager.registerEvent('mergeWithField', self);
+        eventManager.registerEvent('rotate', self);
+        eventManager.registerEvent('move', self);
+        eventManager.registerEvent('hardDrop', self);
+        eventManager.registerEvent('mergeWithField', self);
     }());
 };
 
@@ -413,16 +413,16 @@ var Game = function(field) {
         level: 1,
         state: 'idle',
         score: 0,
-	currentShape: null,
-	nextShape: null,
-	currentPiece: null,
+        currentShape: null,
+        nextShape: null,
+        currentPiece: null,
     };
 
     this.minDelayOnNewPiece = 0;
 
 
     this.start = function(level) {
-	var state = this.state;
+        var state = this.state;
 
         level = parseInt(level, 10); // a string would result in miscalculations
 
@@ -430,95 +430,100 @@ var Game = function(field) {
 
         state.level = level;
         state.state = 'running';
-	state.score = 0;
-	state.clearedLines = 0;
-	state.nextShape = getRandomShape();
+        state.score = 0;
+        state.clearedLines = 0;
+        state.nextShape = getRandomShape();
 
         field.reset();
 
         insertRandomPiece();
 
-	runLoopTimer = setTimeout(runLoop, dropIntervalForLevel(level));
+        runLoopTimer = setTimeout(runLoop, dropIntervalForLevel(level));
 
-	eventManager.emit('stateChange');
+        eventManager.emit('stateChange');
         eventManager.emit('levelUp');
     };
 
     this.stop = function() {
-	var state = this.state;
+        var state = this.state;
 
-	clearTimeout(runLoopTimer);
-	state.state = 'idle';
-	eventManager.emit('stateChange');
+        clearTimeout(runLoopTimer);
+        state.state = 'idle';
+        eventManager.emit('stateChange');
     };
 
     this.togglePause = function() {
-	var state = this.state;
+        var state = this.state;
 
-	switch (state.state) {
-	case 'running':
-	    state.state = 'paused';
-	    clearTimeout(runLoopTimer);
-	    break;
+        switch (state.state) {
+        case 'running':
+            state.state = 'paused';
+            clearTimeout(runLoopTimer);
+            break;
 
-	case 'paused':
-	    state.state = 'running';
-	    runLoopTimer = setTimeout(runLoop, dropIntervalForLevel(state.level));
-	    break;
+        case 'paused':
+            state.state = 'running';
+            runLoopTimer = setTimeout(runLoop, dropIntervalForLevel(state.level));
+            break;
 
-	default:
-	    throw 'Game::togglePause: Game is not running';
-	}
+        default:
+            throw 'Game::togglePause: Game is not running';
+        }
 
-	eventManager.emit('stateChange');
+        eventManager.emit('stateChange');
     };
 
 
     var runLoopTimer;
     var runLoop = function() {
-	var state = self.state;
+        var state = self.state;
         var delay;
 
         if (!self.state.currentPiece.canMove('down')) {
-	    var currentPiece = state.currentPiece;
+            var currentPiece = state.currentPiece;
 
-	    // field full?
-            if (currentPiece.state.position.y < 0 - countFirstEmptyRowsOfShapeMask(state.currentShape.mask)) {
-		self.stop();
+            // field full?
+            var rotatedShapeMask =
+                rotateShapeMask(state.currentShape.mask,
+                                state.currentPiece.state.rotation);
+            var numEmptyRows = countFirstEmptyRowsOfShapeMask(rotatedShapeMask);
+
+            if (currentPiece.state.position.y < 0 - numEmptyRows) {
+                self.stop();
                 return;
             }
 
 
             currentPiece.mergeWithField();
 
-	    var fullRows = field.getFullRows();
-	    var numFullRows = fullRows.length;
+            var fullRows = field.getFullRows();
+            var numFullRows = fullRows.length;
             if (numFullRows > 0) {
-		for (var i = 0; i < numFullRows; ++i) {
-		    field.clearRow(fullRows[i]);
-		}
+                for (var i = 0; i < numFullRows; ++i) {
+                    field.clearRow(fullRows[i]);
+                }
 
 
-		var mul = 0;
+                var mul = 0;
 
-		switch (numFullRows) {
-		case 1: mul = 40;   break;
-		case 2: mul = 100;  break;
-		case 3: mul = 300;  break;
-		case 4: mul = 1200; break;
-		};
+                switch (numFullRows) {
+                case 1: mul = 40;   break;
+                case 2: mul = 100;  break;
+                case 3: mul = 300;  break;
+                case 4: mul = 1200; break;
+                };
 
-		state.score += (state.level + 1) * mul + mul;
+                state.score += (state.level + 1) * mul + mul;
             }
 
-	    state.clearedLines += numFullRows;
+            state.clearedLines += numFullRows;
 
-	    var oldLevel = state.level;
-	    state.level = startLevel + parseInt(state.clearedLines / 10, 10);
+            var oldLevel = state.level;
+            state.level = startLevel + parseInt(state.clearedLines / 10, 10);
 
-	    if (state.level !== oldLevel) {
-		eventManager.emit('levelUp');
-	    }
+            if (state.level !== oldLevel) {
+                eventManager.emit('levelUp');
+            }
 
             insertRandomPiece();
 
@@ -532,43 +537,43 @@ var Game = function(field) {
             delay = dropIntervalForLevel(state.level);
         }
 
-	runLoopTimer = setTimeout(runLoop, delay);
+        runLoopTimer = setTimeout(runLoop, delay);
     };
 
 
 
     var dropIntervalForLevel = function(level) {
-	return 1000 * Math.pow(0.8, level/2);
+        return 1000 * Math.pow(0.8, level/2);
     };
 
 
     var getRandomShape = function() {
         var names = 'ijlostz';
         var idx = parseInt(Math.random() * names.length, 10);
-	return SHAPES[names[idx]];
+        return SHAPES[names[idx]];
     };
 
     var insertRandomPiece = function() {
-	var state = self.state;
+        var state = self.state;
 
-	var shape = state.nextShape;
+        var shape = state.nextShape;
 
-	state.currentShape = shape;
-	state.nextShape = getRandomShape();
+        state.currentShape = shape;
+        state.nextShape = getRandomShape();
         state.currentPiece = new Piece(field, shape);
 
-	state.currentPiece.registerCallback('hardDrop', function() {
-	    clearTimeout(runLoopTimer);
-	    runLoop();
-	});
+        state.currentPiece.registerCallback('hardDrop', function() {
+            clearTimeout(runLoopTimer);
+            runLoop();
+        });
 
-	eventManager.emit('newPiece');
+        eventManager.emit('newPiece');
     };
 
- 
+
     (function() {
-	eventManager.registerEvent('stateChange', self);
-	eventManager.registerEvent('levelUp', self);
-	eventManager.registerEvent('newPiece', self);
+        eventManager.registerEvent('stateChange', self);
+        eventManager.registerEvent('levelUp', self);
+        eventManager.registerEvent('newPiece', self);
     }());
 };

@@ -66,10 +66,7 @@ function drawPiece(piece, shape, ctx) {
                 x = posX + j;
 
                 if (y >= 0) { // could be partially hidden
-//                    ctx.fillRect(x * PX_PER_UNIT, y * PX_PER_UNIT, PX_PER_UNIT, PX_PER_UNIT);
-
                     ctx.drawImage(img, x * PX_PER_UNIT, y * PX_PER_UNIT);
-
                 }
             }
         }
