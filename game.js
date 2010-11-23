@@ -482,19 +482,21 @@ var Game = function(field) {
         if (!self.state.currentPiece.canMove('down')) {
             var currentPiece = state.currentPiece;
 
+            currentPiece.mergeWithField();
+
+
             // field full?
             var rotatedShapeMask =
                 rotateShapeMask(state.currentShape.mask,
                                 state.currentPiece.state.rotation);
             var numEmptyRows = countFirstEmptyRowsOfShapeMask(rotatedShapeMask);
 
+
             if (currentPiece.state.position.y < 0 - numEmptyRows) {
                 self.stop();
                 return;
             }
 
-
-            currentPiece.mergeWithField();
 
             var fullRows = field.getFullRows();
             var numFullRows = fullRows.length;
