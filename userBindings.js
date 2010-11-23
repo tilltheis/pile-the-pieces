@@ -67,11 +67,11 @@ function keyCodeToChar(keyCode) {
 setupUserStorage = function() {
     // accessing unsaved values may return null (Mozilla) or undefined (Webkit, Opera)
     if (!localStorage['hardDropKey']) {
-        localStorage['hardDropKey'] = KEY_CODES.KP_2;
-        localStorage['moveDownKey'] = KEY_CODES.KP_1;
-        localStorage['moveLeftKey'] = KEY_CODES.KP_4;
-        localStorage['moveRightKey'] = KEY_CODES.KP_6;
-        localStorage['rotateLeftKey'] = KEY_CODES.KP_5;
+        localStorage['hardDropKey']    = KEY_CODES.KP_2;
+        localStorage['moveDownKey']    = KEY_CODES.KP_1;
+        localStorage['moveLeftKey']    = KEY_CODES.KP_4;
+        localStorage['moveRightKey']   = KEY_CODES.KP_6;
+        localStorage['rotateLeftKey']  = KEY_CODES.KP_5;
         localStorage['rotateRightKey'] = KEY_CODES.KP_8;
     }
 
@@ -359,7 +359,7 @@ setupUserBindings = function(game, elements) {
 
 
     
-    // activiate after everything has been set up
+    // activate after everything has been set up
     inputManager.activate();
 };
 
