@@ -121,11 +121,11 @@ setupUserBindings = function(game, elements) {
 
         
         var callbacks = {
-            'hardDrop': makeHardDropFunction(),
-            'moveDown': makePieceActionFunction('move', 'down', makeHardDropFunction()),
-            'moveLeft': makePieceActionFunction('move', 'left'),
-            'moveRight': makePieceActionFunction('move', 'right'),
-            'rotateLeft': makePieceActionFunction('rotate', 'left'),
+            'hardDrop':    makeHardDropFunction(),
+            'moveDown':    makePieceActionFunction('move', 'down', makeHardDropFunction()),
+            'moveLeft':    makePieceActionFunction('move', 'left'),
+            'moveRight':   makePieceActionFunction('move', 'right'),
+            'rotateLeft':  makePieceActionFunction('rotate', 'left'),
             'rotateRight': makePieceActionFunction('rotate', 'right')
         };
 
@@ -234,93 +234,95 @@ setupUserBindings = function(game, elements) {
 
     // DOM CONNECTIONS
 
+    var setupControlInputConnections = function(el) {
+        el.addEventListener('keydown', function(e) {
+            var id = this.id;
+            var action = id.substr(0, id.length - 3);
+
+            var keyCode = e.keyCode;
+
+            if (keyCode !== 9) { // tab
+                // don't change input box value
+                // but leave tab functionality intact
+                e.preventDefault();
+            }
+
+            // convert numpad numbers to normal numbers
+            if (keyCode >= KEY_CODES.KP_0 && keyCode <= KEY_CODES.KP_9) {
+                keyCode = keyCode - KEY_CODES.KP_0 + 48; // '0' = 48
+            }
+
+
+            // only accept letters, numbers, spaces and arrow keys
+            if ((keyCode < 48 || keyCode > 57) && // '0' = 48, '9' = 57
+                (keyCode < 65 || keyCode > 90) && // 'A' = 65, 'Z' = 90
+                (keyCode < 37 || keyCode > 40) && // <LEFT> = 37, <DOWN> = 40
+                keyCode !== 32)                   // ' ' = 32
+            {
+                if (keyCode === 8 && this.value !== 'EMPTY') { // backspace
+                    inputManager.removeKeyListener(localStorage[this.id]);
+                    this.value = "EMPTY";
+
+                    // '0' is not equal to false, therefore it won't be changed
+                    // by setupUserStorage()
+                    localStorage[this.id] = '0';
+                }
+
+                return;
+            }
+
+
+            var character = keyCodeToChar(keyCode);
+
+            // opera always inserts the typed char into the field's value
+            // (even though it's set '')
+            if (window.opera) {
+                this.value = '';
+                var that = this;
+                setTimeout(function() { that.value = character; }, 0);
+            } else {
+                this.value = character;
+            }
+
+
+            // convert all numbers to numpad numbers
+            if (keyCode >= 48 && keyCode <= 57) { // '0' = 48, '9' = 57
+                keyCode = keyCode - 48 + KEY_CODES.KP_0;
+            }
+
+
+            mapKeyBinding(keyCode, action);
+
+
+            // remove possible duplicate of the key (bound to another action)
+
+            var len = controlInputEls.length;
+            var value = this.value;
+            var el;
+            for (var i = 0; i < len; ++i) {
+                el = controlInputEls[i];
+
+                if (el.value === value && el.id !== id) {
+                    el.value = 'EMPTY';
+                    localStorage[el.id] = 0;
+
+                    // there can only be one duplicate because this function
+                    // will be called on every change
+                    break;
+                }
+            }
+        }, false);
+
+
+        el.addEventListener('keydown', function(e) {
+            // dont interpret keystroke as game-play input
+            e.stopPropagation();
+        }, false);
+    };
+
     var controlInputEls = document.getElementsByClassName('control');
     for (i = 0; i < controlInputEls.length; ++i) {
-        (function(el) {
-            el.addEventListener('keydown', function(e) {
-                var id = this.id;
-                var action = id.substr(0, id.length - 3);
-
-                var keyCode = e.keyCode;
-
-                if (keyCode !== 9) { // tab
-                    // don't change input box value
-                    // but leave tab functionality intact
-                    e.preventDefault();
-                }
-
-                // convert numpad numbers to normal numbers
-                if (keyCode >= KEY_CODES.KP_0 && keyCode <= KEY_CODES.KP_9) {
-                    keyCode = keyCode - KEY_CODES.KP_0 + 48; // '0' = 48
-                }
-
-
-                // only accept letters, numbers, spaces and arrow keys
-                if ((keyCode < 48 || keyCode > 57) && // '0' = 48, '9' = 57
-                    (keyCode < 65 || keyCode > 90) && // 'A' = 65, 'Z' = 90
-                    (keyCode < 37 || keyCode > 40) && // <LEFT> = 37, <DOWN> = 40
-                    keyCode !== 32)                   // ' ' = 32
-                {
-                    if (keyCode === 8 && this.value !== 'EMPTY') { // backspace
-                        inputManager.removeKeyListener(localStorage[this.id]);
-                        this.value = "EMPTY";
-
-                        // '0' is not equal to false, therefore it won't be changed
-                        // by setupUserStorage()
-                        localStorage[this.id] = '0';
-                    }
-
-                    return;
-                }
-
-
-                var character = keyCodeToChar(keyCode);
-
-                // opera always inserts the typed char into the field's value
-                // (even though it's set '')
-                if (window.opera) {
-                    this.value = '';
-                    var that = this;
-                    setTimeout(function() { that.value = character; }, 0);
-                } else {
-                    this.value = character;
-                }
-
-
-                // convert all numbers to numpad numbers
-                if (keyCode >= 48 && keyCode <= 57) { // '0' = 48, '9' = 57
-                    keyCode = keyCode - 48 + KEY_CODES.KP_0;
-                }
-
-
-                mapKeyBinding(keyCode, action);
-                
-
-                // remove possible duplicate of the key (bound to another action)
-
-                var len = controlInputEls.length;
-                var value = this.value;
-                var el;
-                for (var i = 0; i < len; ++i) {
-                    el = controlInputEls[i];
-
-                    if (el.value === value && el.id !== id) {
-                        el.value = 'EMPTY';
-                        localStorage[el.id] = 0;
-
-                        // there can only be one duplicate because this function
-                        // will be called on every change
-                        break;
-                    }
-                }
-            }, false);
-
-
-            el.addEventListener('keydown', function(e) {
-                // dont interpret keystroke as game-play input
-                e.stopPropagation();
-            }, false);
-        }(controlInputEls[i]));
+        setupControlInputConnections(controlInputEls[i]);
     }
 
 
