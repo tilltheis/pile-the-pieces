@@ -173,8 +173,18 @@ setupUserBindings = function(game, elements) {
                 }
 
 
+                var character = keyCodeToChar(keyCode);
 
-                this.value = keyCodeToChar(keyCode);
+                // opera always inserts the typed char into the field's value
+                // (even though it's set '')
+                if (window.opera) {
+                    this.value = '';
+                    var that = this;
+                    setTimeout(function() { that.value = character; }, 0);
+                } else {
+                    this.value = character;
+                }
+
 
                 // convert all numbers to numpad numbers
                 if (keyCode >= 48 && keyCode <= 57) { // '0' = 48, '9' = 57
