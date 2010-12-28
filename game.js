@@ -415,7 +415,7 @@ var Game = function(field) {
         score: 0,
         currentShape: null,
         nextShape: null,
-        currentPiece: null,
+        currentPiece: null
     };
 
     this.minDelayOnNewPiece = 0;
@@ -513,7 +513,7 @@ var Game = function(field) {
                 case 2: mul = 100;  break;
                 case 3: mul = 300;  break;
                 case 4: mul = 1200; break;
-                };
+                }
 
                 state.score += (state.level + 1) * mul + mul;
             }

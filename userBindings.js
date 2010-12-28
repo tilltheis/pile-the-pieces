@@ -8,22 +8,11 @@ var setupUserStorage;
 
 // CONSTANTS
 
-var KEY_CODES = {
-    KP_0: 96,
-    KP_1: 97,
-    KP_2: 98,
-    KP_3: 99,
-    KP_4: 100,
-    KP_5: 101,
-    KP_6: 102,
-    KP_7: 103,
-    KP_8: 104,
-    KP_9: 105
-};
+var KEY_CODES;
 
 // Opera doesn't distinguish between numpad keys und normal numbers
 if (window.opera) {
-    var KEY_CODES = {
+    KEY_CODES = {
         KP_0: 48,
         KP_1: 49,
         KP_2: 50,
@@ -34,6 +23,19 @@ if (window.opera) {
         KP_7: 55,
         KP_8: 56,
         KP_9: 57
+    };
+} else {
+    KEY_CODES = {
+        KP_0: 96,
+        KP_1: 97,
+        KP_2: 98,
+        KP_3: 99,
+        KP_4: 100,
+        KP_5: 101,
+        KP_6: 102,
+        KP_7: 103,
+        KP_8: 104,
+        KP_9: 105
     };
 }
 
@@ -46,10 +48,10 @@ var ACTIONS = ['hardDrop', 'moveDown', 'moveLeft', 'moveRight', 'rotateLeft', 'r
 function keyCodeToChar(keyCode) {
     switch (keyCode) {
     case 32: return 'SPACE';
-    case 37: return '←';
-    case 38: return '↑';
-    case 39: return '→';
-    case 40: return '↓';
+    case 37: return '\u2190'; // LEFTWARDS ARROW
+    case 38: return '\u2191'; // UPWARDS ARROW
+    case 39: return '\u2192'; // RIGHTWARDS ARROW
+    case 40: return '\u2193'; // DOWNWARDS ARROW
 
     default:
         if (keyCode >= KEY_CODES.KP_0 && keyCode <= KEY_CODES.KP_9) {
@@ -58,7 +60,7 @@ function keyCodeToChar(keyCode) {
 
         return String.fromCharCode(keyCode);
     }
-};
+}
 
 
 
@@ -66,22 +68,121 @@ function keyCodeToChar(keyCode) {
 
 setupUserStorage = function() {
     // accessing unsaved values may return null (Mozilla) or undefined (Webkit, Opera)
-    if (!localStorage['hardDropKey']) {
-        localStorage['hardDropKey']    = KEY_CODES.KP_2;
-        localStorage['moveDownKey']    = KEY_CODES.KP_1;
-        localStorage['moveLeftKey']    = KEY_CODES.KP_4;
-        localStorage['moveRightKey']   = KEY_CODES.KP_6;
-        localStorage['rotateLeftKey']  = KEY_CODES.KP_5;
-        localStorage['rotateRightKey'] = KEY_CODES.KP_8;
+    if (!localStorage.hardDropKey) {
+        localStorage.hardDropKey    = KEY_CODES.KP_2;
+        localStorage.moveDownKey    = KEY_CODES.KP_1;
+        localStorage.moveLeftKey    = KEY_CODES.KP_4;
+        localStorage.moveRightKey   = KEY_CODES.KP_6;
+        localStorage.rotateLeftKey  = KEY_CODES.KP_5;
+        localStorage.rotateRightKey = KEY_CODES.KP_8;
     }
 
     localStorage.startLevel = localStorage.startLevel || 1;
-}
+};
 
 
 setupUserBindings = function(game, elements) {
+
+    // VARIABLES
+
     var inputManager = new InputManager(document);
     var gameState = game.state;
+    
+
+
+    // FUNCTIONS
+
+    var loadKeyBindings = function() {
+        var action, keyCode;
+        for (var i = 0, l = ACTIONS.length; i < l; ++i) {
+            action = ACTIONS[i];
+            keyCode = localStorage[action + 'Key'];
+            mapKeyBinding(keyCode, action);
+        }
+    };
+
+    var bindingOptionsForAction = function(action) {
+        var makeHardDropFunction = function() {
+            return function() {
+                gameState.currentPiece.hardDrop();
+            };
+        };
+
+        var makePieceActionFunction = function(action, direction, onCannotPerform) {
+            return function() {
+                var piece = gameState.currentPiece;
+                if (piece['can' + action.capitalized()](direction)) {
+                    piece[action](direction);
+                } else if (onCannotPerform) {
+                    onCannotPerform();
+                }
+            };
+        };
+
+        
+        var callbacks = {
+            'hardDrop': makeHardDropFunction(),
+            'moveDown': makePieceActionFunction('move', 'down', makeHardDropFunction()),
+            'moveLeft': makePieceActionFunction('move', 'left'),
+            'moveRight': makePieceActionFunction('move', 'right'),
+            'rotateLeft': makePieceActionFunction('rotate', 'left'),
+            'rotateRight': makePieceActionFunction('rotate', 'right')
+        };
+
+
+        var options = {};
+
+        options.callback = callbacks[action];
+        
+        if (action.substr(0, 4) === 'move') {
+            options.interval = 100;
+        } else if (action.substr(0, 6) === 'rotate') {
+            options.interval = 200;
+        }
+
+        return options;
+    };
+
+
+    var mapKeyBinding = function(keyCode, action) {
+        var options = bindingOptionsForAction(action);
+
+        try {
+            inputManager.removeKeyListener(localStorage[action + 'Key']);
+        } catch (e) {
+            // no registered listener or no saved bindings
+        }
+        
+        try {
+            // will throw when key is already bound
+            inputManager.addKeyListener(keyCode, options.callback, options.interval);
+        } catch (e2) {
+            inputManager.removeKeyListener(keyCode);
+            inputManager.addKeyListener(keyCode, options.callback, options.interval);
+        }
+
+        localStorage[action + 'Key'] = keyCode;
+    };
+
+
+    var populateOptionsForm = function() {
+        var i, len, input, keyCode;
+
+        var controlEls = document.getElementsByClassName('control');
+
+        len = controlEls.length;
+        for (i = 0; i < len; ++i) {
+            input = controlEls[i];
+            keyCode = +localStorage[input.id]; // i.e. "moveDownKey"
+
+            if (keyCode) { // can be 0
+                input.value = keyCodeToChar(keyCode);
+            }
+        }
+
+        elements.startLevel.value = localStorage.startLevel;
+    };
+
 
 
 
@@ -97,8 +198,8 @@ setupUserBindings = function(game, elements) {
     // GAME CONNECTIONS
 
     game.registerCallback('stateChange', function() {
-        var startStop = elements['startStop'];
-        var togglePause = elements['togglePause'];
+        var startStop = elements.startStop;
+        var togglePause = elements.togglePause;
 
         switch (this.state.state) {
         case 'running':
@@ -224,7 +325,7 @@ setupUserBindings = function(game, elements) {
 
 
 
-    elements['resetControls'].addEventListener('click', function(e) {
+    elements.resetControls.addEventListener('click', function(e) {
         var key, keyCode;
 
         for (var i = 0, l = ACTIONS.length; i < l; ++i) {
@@ -246,126 +347,31 @@ setupUserBindings = function(game, elements) {
 
     
     
-    elements['startStop'].addEventListener('click', function() {
+    elements.startStop.addEventListener('click', function() {
         if (gameState.state === 'idle') {
             var level = localStorage.startLevel;
             game.start(level);
-            elements['level'].innerHTML = level;
+            elements.level.innerHTML = level;
         } else {
             game.stop();
         }
     }, false);
 
-    elements['togglePause'].addEventListener('click', function() {
+    elements.togglePause.addEventListener('click', function() {
         game.togglePause();
     }, false);
 
-    elements['startLevel'].addEventListener('change', function() {
+    elements.startLevel.addEventListener('change', function() {
         var num = Math.min(Math.max(parseInt(this.value, 10), 1), 50);
         this.value = num;
         localStorage.startLevel = num;
     }, false);
 
-    elements['resetHighscore'].addEventListener('click', function() {
+    elements.resetHighscore.addEventListener('click', function() {
         localStorage.highscore = 0;
         gameState.highscore = 0;
-        elements['highscore'].innerHTML = '0';
+        elements.highscore.innerHTML = '0';
     }, false);
-
-
-
-    // FUNCTIONS
-
-    function loadKeyBindings() {
-        var action, keyCode;
-        for (var i = 0, l = ACTIONS.length; i < l; ++i) {
-            action = ACTIONS[i];
-            keyCode = localStorage[action + 'Key'];
-            mapKeyBinding(keyCode, action);
-        }
-    };
-
-    function bindingOptionsForAction(action) {
-        var makeHardDropFunction = function() {
-            return function() {
-                gameState.currentPiece.hardDrop();
-            };
-        };
-
-        var makePieceActionFunction = function(action, direction, onCannotPerform) {
-            return function() {
-                var piece = gameState.currentPiece;
-                if (piece['can' + action.capitalized()](direction)) {
-                    piece[action](direction);
-                } else if (onCannotPerform) {
-                    onCannotPerform();
-                }
-            };
-        };
-
-        
-        var callbacks = {
-            'hardDrop': makeHardDropFunction(),
-            'moveDown': makePieceActionFunction('move', 'down', makeHardDropFunction()),
-            'moveLeft': makePieceActionFunction('move', 'left'),
-            'moveRight': makePieceActionFunction('move', 'right'),
-            'rotateLeft': makePieceActionFunction('rotate', 'left'),
-            'rotateRight': makePieceActionFunction('rotate', 'right')
-        };
-
-
-        var options = {};
-
-        options.callback = callbacks[action];
-        
-        if (action.substr(0, 4) === 'move') {
-            options.interval = 100;
-        } else if (action.substr(0, 6) === 'rotate') {
-            options.interval = 200;
-        }
-
-        return options;
-    };
-
-
-    function mapKeyBinding(keyCode, action) {
-        var options = bindingOptionsForAction(action);
-
-        try {
-            inputManager.removeKeyListener(localStorage[action + 'Key']);
-        } catch (e) {
-            // no registered listener or no saved bindings
-        }
-        
-        try {
-            // will throw when key is already bound
-            inputManager.addKeyListener(keyCode, options.callback, options.interval);
-        } catch (e) {
-            inputManager.removeKeyListener(keyCode);
-            inputManager.addKeyListener(keyCode, options.callback, options.interval);
-        }
-
-        localStorage[action + 'Key'] = keyCode;
-    };
-
-
-    function populateOptionsForm() {
-        var i, len, input, keyCode;
-
-        var controlEls = document.getElementsByClassName('control');
-
-        len = controlEls.length;
-        for (i = 0; i < len; ++i) {
-            input = controlEls[i];
-            keyCode = +localStorage[input.id]; // i.e. "moveDownKey"
-
-            if (keyCode) { // can be 0
-                input.value = keyCodeToChar(keyCode);
-            }
-        }
-
-        elements['startLevel'].value = localStorage.startLevel;
-    };
 
 
     
@@ -373,4 +379,4 @@ setupUserBindings = function(game, elements) {
     inputManager.activate();
 };
 
-}())
+}());

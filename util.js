@@ -30,19 +30,24 @@ if (!document.getElementsByClassName) {
 }
 
 
-function clone(obj){
-    if(obj == null || typeof(obj) != 'object')
+var clone = function(obj){
+    if(obj === null || typeof(obj) != 'object') {
         return obj;
+    }
 
     var temp = obj.constructor(); // changed
 
-    for(var key in obj)
-        temp[key] = clone(obj[key]);
+    for(var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            temp[key] = clone(obj[key]);
+        }
+    }
+
     return temp;
 };
 
 
-function triggerEvent(target, eventType, optionalCanBubble, optionalCancelable) {
+var triggerEvent = function(target, eventType, optionalCanBubble, optionalCancelable) {
     var canBubble = undefined === optionalCanBubble ? true : optionalCanBubble;
     var cancelable = undefined === optionalCancelable ? true : optionalCancelable;
     var event = document.createEvent('Event');
@@ -51,7 +56,7 @@ function triggerEvent(target, eventType, optionalCanBubble, optionalCancelable) 
 };
 
 
-function stringifyNumber(num) {
+var stringifyNumber = function(num) {
     var inStr = num + '';
     var outStr = '';
 

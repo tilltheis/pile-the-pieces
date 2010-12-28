@@ -26,7 +26,7 @@ var PREVIEW_SHAPE_SIZE = {
 
 // FUNCTIONS (context independent)
 
-function drawField(field, ctx) {
+var drawField = function(field, ctx) {
     var canvas = ctx.canvas;
     var oldWidth = canvas.width;
     canvas.width = 0;
@@ -49,7 +49,7 @@ function drawField(field, ctx) {
     }
 };
 
-function drawPiece(piece, shape, ctx) {
+var drawPiece = function(piece, shape, ctx) {
     var i, j, x, y;
 
     var mask = rotateShapeMask(shape.mask, piece.state.rotation);
@@ -70,10 +70,10 @@ function drawPiece(piece, shape, ctx) {
                 }
             }
         }
-    };
+    }
 };
 
-function drawShadowPiece(field, piece, shape, ctx) {
+var drawShadowPiece = function(field, piece, shape, ctx) {
     var shadowShape = clone(shape);
     shadowShape.name = 'shadow';
 
@@ -85,7 +85,7 @@ function drawShadowPiece(field, piece, shape, ctx) {
     drawPiece(piece, shape, ctx); // redraw possibly hidden piece
 };
 
-function drawPreviewShape(shape, ctx) {
+var drawPreviewShape = function(shape, ctx) {
     var size = PREVIEW_SHAPE_SIZE[shape.name];
     var mask = shape.mask;
 
@@ -130,7 +130,7 @@ function drawPreviewShape(shape, ctx) {
             }
         }
     }
-}
+};
 
 
 
@@ -147,18 +147,18 @@ setupGameBindings = function(game, field, elements) {
 
     var gameState = game.state;
 
-    var fieldCtx = elements['field'].getContext('2d');
-    var nextPieceCtx = elements['nextPiece'].getContext('2d');
+    var fieldCtx = elements.field.getContext('2d');
+    var nextPieceCtx = elements.nextPiece.getContext('2d');
 
 
 
     // MISC
 
-    var nextPieceCanvas = elements['nextPiece'];
+    var nextPieceCanvas = elements.nextPiece;
     nextPieceCanvas.width  = 4 * PX_PER_UNIT;
     nextPieceCanvas.height = 4 * PX_PER_UNIT;
 
-    var fieldCanvas = elements['field'];
+    var fieldCanvas = elements.field;
     fieldCanvas.width = field.width * PX_PER_UNIT;
     fieldCanvas.height = field.height * PX_PER_UNIT;
 
@@ -173,7 +173,7 @@ setupGameBindings = function(game, field, elements) {
     
     // LOAD FROM STORAGE
     
-    elements['highscore'].innerHTML = stringifyNumber(localStorage.highscore);
+    elements.highscore.innerHTML = stringifyNumber(localStorage.highscore);
 
 
 
@@ -183,22 +183,22 @@ setupGameBindings = function(game, field, elements) {
         if (this.state.state === 'idle') {
             localStorage.highscore = Math.max(localStorage.highscore, gameState.score);
             
-            elements['highscore'].innerHTML = stringifyNumber(localStorage.highscore);
+            elements.highscore.innerHTML = stringifyNumber(localStorage.highscore);
         }
     });
 
     game.registerCallback('stateChange', function() {
-        elements['status'].innerHTML = gameState.state.replace(/idle/, 'game over');
+        elements.status.innerHTML = gameState.state.replace(/idle/, 'game over');
 
-        elements['status'].style.display = gameState.state === 'running' ? 'none' : 'block';
+        elements.status.style.display = gameState.state === 'running' ? 'none' : 'block';
     });
 
     game.registerCallback('levelUp', function() {
-        elements['level'].innerHTML = gameState.level;
+        elements.level.innerHTML = gameState.level;
     });
 
     game.registerCallback('newPiece', function() {
-        elements['score'].innerHTML = stringifyNumber(gameState.score);
+        elements.score.innerHTML = stringifyNumber(gameState.score);
     });
 
 
@@ -223,7 +223,7 @@ setupGameBindings = function(game, field, elements) {
 
 
     (function() {
-        var htmlTimer = elements['elapsedTime'];
+        var htmlTimer = elements.elapsedTime;
         var duration = 0; // ms
         var durationTimerLoop = function() {
             var durationDate = new Date(duration);
@@ -295,7 +295,7 @@ setupGameBindings = function(game, field, elements) {
     });
 
     field.registerCallback('clearRow', function() {
-        var el = elements['clearedLines'];
+        var el = elements.clearedLines;
         el.innerHTML = parseInt(el.innerHTML, 10) + 1;
     });
 

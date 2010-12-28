@@ -37,7 +37,9 @@ var InputManager = function(target) {
         target.removeEventListener('keyup', keyUpListener, false);
 
         for (var i in keyListeners) {
-            clearTimeout(keyListeners[i].timer);
+            if (keyListeners.hasOwnProperty(i)) {
+                clearTimeout(keyListeners[i].timer);
+            }
         }
     };
 

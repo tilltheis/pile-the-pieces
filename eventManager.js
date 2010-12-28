@@ -45,7 +45,7 @@ var EventManager = function() {
     this.registerEvent = function(event, optionalContext) {
         if (event in events) {
             throw "EventManager::registerEvent: Event '" + event + "' is already registered";
-        };
+        }
 
         events[event] = {
             callbacks: [],
