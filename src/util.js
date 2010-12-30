@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
  if (!String.prototype.capitalized) {
     String.prototype.capitalized = function() {
-        return this.replace(/(\w)(\w*)/g, function($0, $1, $2) {
+        return this.replace(/(\w)(\w*)\b/g, function($0, $1, $2) {
             return $1.toUpperCase() + $2.toLowerCase();
         });
     };
