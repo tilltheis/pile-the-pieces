@@ -108,10 +108,10 @@ var KEY_LAYOUTS = {
 var keyCodeToChar = function(keyCode) {
     switch (keyCode) {
     case  32: return 'SPACE';
-    case  37: return '←'; // LEFTWARDS ARROW
-    case  38: return '↑'; // UPWARDS ARROW
-    case  39: return '→'; // RIGHTWARDS ARROW
-    case  40: return '↓'; // DOWNWARDS ARROW
+    case  37: return '\u2190'; // LEFTWARDS ARROW
+    case  38: return '\u2191'; // UPWARDS ARROW
+    case  39: return '\u2192'; // RIGHTWARDS ARROW
+    case  40: return '\u2193'; // DOWNWARDS ARROW
     case 188: return ',';
     case 189: return '-';
     case 190: return '.';
@@ -140,12 +140,14 @@ var storeKeyLayout = function(layout) {
 // EXPORTS
 
 setupUserStorage = function() {
+    var defaultKeyLayout = 'numpad';
+
     // accessing unsaved values may return null (Mozilla) or undefined (Webkit, Opera)
     if (-1 !== [null, undefined].indexOf(localStorage.hardDropKey)) {
-        var defaultLayout = KEY_LAYOUTS.numpad;
-        storeKeyLayout(defaultLayout);
+        storeKeyLayout(KEY_LAYOUTS[defaultKeyLayout]);
     }
 
+    localStorage.keyLayout = localStorage.keyLayout || defaultKeyLayout;
     localStorage.startLevel = localStorage.startLevel || 1;
 };
 
@@ -237,6 +239,8 @@ setupUserBindings = function(game, elements) {
     var populateOptionsForm = function() {
         var i, len, input, keyCode;
 
+        elements[localStorage.keyLayout + 'KeyLayout'].selected = true;
+
         var controlEls = document.getElementsByClassName('control');
 
         len = controlEls.length;
@@ -250,6 +254,22 @@ setupUserBindings = function(game, elements) {
         }
 
         elements.startLevel.value = localStorage.startLevel;
+    };
+
+
+    var useCustomKeyLayout = function() {
+        elements.customKeyLayout.selected = true;
+        localStorage.keyLayout = 'custom';
+    };
+
+    var usePredefinedKeyLayout = function(name) {
+        clearKeyListeners();
+
+        storeKeyLayout(KEY_LAYOUTS[name]);
+        localStorage.keyLayout = name;
+
+        loadKeyBindings();
+        populateOptionsForm();
     };
 
 
@@ -343,7 +363,7 @@ setupUserBindings = function(game, elements) {
 
 
             // this is no default key layout any longer
-            elements.customKeyLayout.selected = true;
+            useCustomKeyLayout();
 
 
             var character = keyCodeToChar(keyCode);
@@ -401,7 +421,7 @@ setupUserBindings = function(game, elements) {
 
 
 
-    var clearKeyListeners = function(e) {
+    var clearKeyListeners = function() {
         var key, keyCode;
 
         for (var i = 0, l = ACTIONS.length; i < l; ++i) {
@@ -420,17 +440,13 @@ setupUserBindings = function(game, elements) {
     };
 
 
-    var changeKeyLayout = function(layout) {
-        clearKeyListeners();
-        storeKeyLayout(layout);
-        populateOptionsForm();
-        loadKeyBindings();
-    };
 
 
     elements.keyLayouts.addEventListener('change', function() {
-        if (this.value !== 'custom') {
-            changeKeyLayout(KEY_LAYOUTS[this.value]);
+        if (this.value === 'custom') {
+            useCustomKeyLayout();
+        } else {
+            usePredefinedKeyLayout(this.value);
         }
     }, false);
 
