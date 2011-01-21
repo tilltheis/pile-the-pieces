@@ -479,6 +479,170 @@ setupUserBindings = function(game, elements) {
     }, false);
 
 
+
+
+    // setup touch
+    (function() {
+        var isBetween = function(val, lower, upper, unit) {
+            if (unit === undefined) {
+                unit = 1;
+            }
+
+            return val > lower*unit && val <= upper*unit;
+        };
+
+        var direction = function(xDiff, yDiff) {
+            var theta = Math.atan2(yDiff, xDiff);
+
+            if (isBetween(theta, -0.75, -0.25, Math.PI)) {
+                return 'up';
+            } else if (isBetween(theta, -0.25, 0.25, Math.PI)) {
+                return 'right';
+            } else if (isBetween(theta, 0.25, 0.75, Math.PI)) {
+                return 'down';
+            } else {
+                return 'left';
+            }
+        };
+
+        var complementDir = function(dir) {
+            switch (dir) {
+            case 'up':    return 'down';
+            case 'down':  return 'up';
+            case 'left':  return 'right';
+            case 'right': return 'left';
+            default: throw 'complementDir(): invalid direction';
+            }
+        };
+
+        var doRotation = function(touchDir) {
+            if (lastRotatetionDir === undefined && lastTouchDir === 'up' && touchDir === 'down') {
+                isRotation = false;
+                return;
+            }
+
+            var rotationDir;
+
+            if (lastRotatetionDir !== undefined && lastTouchDir === complementDir(touchDir)) {
+                rotationDir = complementDir(lastRotatetionDir);
+            } else {
+
+                if (lastTouchDir === 'up' || lastTouchDir === 'down') {
+                    if (touchDir === 'left' || touchDir === 'right') {
+                        if (lastTouchDir === 'up') {
+                            rotationDir = touchDir;
+                        } else {
+                            rotationDir = touchDir === 'left' ? 'right' : 'left';
+                        }
+                    }
+                } else {
+                    if (touchDir === 'up' || touchDir === 'down') {
+                        if (lastTouchDir === 'left') {
+                            rotationDir = touchDir === 'up' ? 'right' : 'left';
+                        } else {
+                            rotationDir = touchDir === 'up' ? 'left' : 'right';
+                        }
+                    }
+                }
+
+            }
+
+
+            if (rotationDir !== undefined) {
+                lastRotatetionDir = rotationDir;
+                actions['rotate' + rotationDir.capitalized()]();
+            }
+        };
+
+
+        var canvas = elements.field;
+        var ctx = canvas.getContext('2d');
+
+        var startCoords;
+        var startTime;
+        var isRotation;
+        var lastTouchDir;
+        var lastRotatetionDir;
+        var lastStartCoords;
+        var lastStartTime;
+
+        var actions = {
+            moveLeft:    bindingOptionsForAction('moveLeft').callback,
+            moveRight:   bindingOptionsForAction('moveRight').callback,
+            moveDown:    bindingOptionsForAction('moveDown').callback,
+            hardDrop:    bindingOptionsForAction('hardDrop').callback,
+            rotateLeft:  bindingOptionsForAction('rotateLeft').callback,
+            rotateRight: bindingOptionsForAction('rotateRight').callback
+        };
+
+        canvas.ontouchstart = function(e) {
+            e.preventDefault();
+
+            if (game.state.state !== 'running') {
+                return;
+            }
+
+            if (e.touches.length === 1) {
+                startCoords = [e.touches[0].pageX, e.touches[0].pageY];
+                startTime = new Date();
+                isRotation = false;
+                lastTouchDir = 'up'; // neutral
+                lastRotatetionDir = undefined;
+            }
+        };
+
+        canvas.ontouchend = function(e) {
+            if (isRotation) {
+                return;
+            }
+
+            if (lastTouchDir === 'down' && 0.5 < (startCoords[1]-lastStartCoords[1])/(startTime - lastStartTime)) {
+                actions.hardDrop();
+            }
+        };
+
+        canvas.ontouchmove = function(e) {
+            if (e.touches.length !== 1) {
+                return;
+            }
+
+            var touch = e.touches[0];
+            coords = [touch.pageX, touch.pageY];
+
+
+
+            var xDiff = coords[0] - startCoords[0];
+            var yDiff = coords[1] - startCoords[1];
+
+            var threshold = 20;
+            if (Math.abs(xDiff) >= threshold ||
+                Math.abs(yDiff) >= threshold)
+            {
+                var dir = direction(xDiff, yDiff);
+
+                if (dir === 'up') {
+                    isRotation = true;
+                }
+
+
+                if (isRotation) {
+                    doRotation(dir);
+                } else {
+                    actions['move' + dir.capitalized()]();
+                }
+
+                lastTouchDir = dir;
+
+                lastStartCoords = startCoords;
+                startCoords = coords;
+                lastStartTime = startTime;
+                startTime = new Date();
+            }
+        };
+    }());
+
+
+
     
     // activate after everything has been set up
     inputManager.activate();
