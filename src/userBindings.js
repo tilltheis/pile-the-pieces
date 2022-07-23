@@ -149,6 +149,7 @@ setupUserStorage = function() {
 
     localStorage.keyLayout = localStorage.keyLayout || defaultKeyLayout;
     localStorage.startLevel = localStorage.startLevel || 1;
+    localStorage.gameSeed = localStorage.gameSeed || '';
 };
 
 
@@ -254,6 +255,7 @@ setupUserBindings = function(game, elements) {
         }
 
         elements.startLevel.value = localStorage.startLevel;
+        elements.gameSeed.value = localStorage.gameSeed;
     };
 
 
@@ -454,8 +456,9 @@ setupUserBindings = function(game, elements) {
     
     elements.startStop.addEventListener('click', function() {
         if (gameState.state === 'idle') {
-            var level = localStorage.startLevel;
-            game.start(level);
+            var level = parseInt(localStorage.startLevel, 10);
+            var seed = localStorage.gameSeed || null;
+            game.start(level, seed);
             elements.level.innerHTML = level;
         } else {
             game.stop();
@@ -468,8 +471,14 @@ setupUserBindings = function(game, elements) {
 
     elements.startLevel.addEventListener('change', function() {
         var num = Math.min(Math.max(parseInt(this.value, 10), 1), 50);
+        if (Number.isNaN(num)) num = 1;
         this.value = num;
         localStorage.startLevel = num;
+    }, false);
+
+    elements.gameSeed.addEventListener('change', function() {
+        this.value = this.value.trim();
+        localStorage.gameSeed = this.value;
     }, false);
 
     elements.resetHighscore.addEventListener('click', function() {

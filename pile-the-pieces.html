@@ -81,8 +81,10 @@ canvas { border: 1px solid black; }
     <h2>Settings</h2>
     
     <dl>
-        <dt><label for="startLevel">Start Level</label><dt>
-        <dd><input id="startLevel" value="1" size="2"></dd>
+        <dt><label for="gameSeed">Game Seed</label></dt>
+        <dd><input id="gameSeed" placeholder="random" size="4"></dd>
+        <dt><label for="startLevel">Start Level</label></dt>
+        <dd><input id="startLevel" value="1" size="4"></dd>
     </dl>
 
     <button id="resetHighscore">Reset Highscore</button>
@@ -99,6 +101,7 @@ canvas { border: 1px solid black; }
     <img id="shadowPieceImg" src="./img/shadowPiece.png">
 </div>
 
+<script src="./src/rng.js"></script>
 <script src="./src/util.js"></script>
 <script src="./src/eventManager.js"></script>
 <script src="./src/game.js"></script>
@@ -128,7 +131,7 @@ setupGameBindings(game, field, elements);
 setupUserStorage();
 setupUserBindings(game, elements);
 
-game.start(parseInt(localStorage.startLevel, 10));
+game.start(parseInt(localStorage.startLevel, 10), localStorage.gameSeed || null);
 </script>
 
 </body>

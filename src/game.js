@@ -413,6 +413,7 @@ var Game = function(field) {
     var self = this;
 
     var startLevel;
+    var nextRandomNumber;
 
     var eventManager = new EventManager();
 
@@ -432,12 +433,11 @@ var Game = function(field) {
     this.minDelayOnNewPiece = 0;
 
 
-    this.start = function(level) {
+    this.start = function(level, seed) {
         var state = this.state;
 
-        level = parseInt(level, 10); // a string would result in miscalculations
-
         startLevel = level;
+        nextRandomNumber = RNG.prototype.uniform.bind(new RNG(seed));
 
         state.level = level;
         state.state = 'running';
@@ -562,7 +562,7 @@ var Game = function(field) {
 
     var getRandomShape = function() {
         var names = 'ijlostz';
-        var idx = parseInt(Math.random() * names.length, 10);
+        var idx = parseInt(nextRandomNumber() * names.length, 10);
         return SHAPES[names[idx]];
     };
 
