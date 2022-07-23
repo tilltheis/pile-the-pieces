@@ -6,20 +6,54 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Pile The Pieces</title>
 <style>
-body { position: relative; }
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+/* html, body { overscroll-behavior: contain; } */
+body { position: relative; margin: 0; background: #242424; display: flex; justify-content: center; align-items: center; touch-action: none; user-select: none }
 canvas { border: 1px solid black; }
-#field { float: left; }
-#stats { float: left; }
+#field, #stats { height: 410px; border: 5px double black; }
+#field { float: left; width: 200px; }
+#stats { float: left; width: 120px; color: #a7a9a7; border-left: none; margin: 0; font-family: monospace;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 10px 0;
+ }
 #status { text-transform: capitalize; }
-#stats button { float: right; }
+#stats button {
+    width: 80px;
+    height: 25px;
+    background: url(./img/preview.png);
+    color: #aea9a7;
+    font-family: monospace;
+    border: 1px solid black;
+    margin-bottom: 5px;
+    margin-left: 20px;
+ }
+ #stats button:hover {
+        border-color: grey;
+ }
+ #stats button:active {
+    color: #787573;
+ }
+
+ #stats button#togglePause {
+    margin-bottom: 15px;
+ }
 /*#score { margin: 0; text-align: center; width: 200px; }*/
 /*#statsTitle { margin-top: -30px; margin-left: 203px; }*/
-#game { width: 320px; height: 460px; background: beige; float: left; position: relative; }
+#game { /*width: 320px; height: 460px;*/ background: #1c1c1c; float: left; position: relative; display: block; /*width: 100vw; height: 100vh;*/ }
 #game dd { margin: 0; padding: 0; float: right; }
 #game dt { clear: right; }
-#controls, #settings { width: 150px; float: left; }
+#controls, #settings { width: 150px; float: left; display: none; }
 #status { width: 200px; position: absolute; left: 1px; top: 158px; background: rgba(0, 0, 0, 0.7); text-align: center; color: #fff; height: 30px; font-size: 30px; padding-top: 4px; border: 1px solid rgba(255, 255, 255, 0.5); border-width: 1px 0; }
-#field { background: url('./img/field.png'); }
+#field { background: url('./img/field.png') no-repeat; }
 #nextPiece { background: url('./img/preview.png'); }
 </style>
 </head>
@@ -30,24 +64,34 @@ canvas { border: 1px solid black; }
 <canvas id="field"></canvas>
 
 <!--<h2 id="statsTitle">Stats</h2>-->
-<dl id="stats">
-    <!--<dt>Status</dt>
-    <dd id="status"></dd>-->
-    <dt>Next Piece</dt>
-    <dd><canvas id="nextPiece"></canvas></dd>
-    <dt>Score</dt>
-    <dd id="score">0</dd>
-    <dt>Highscore</dt>
-    <dd id="highscore">0</dd>
-    <dt>Level</dt>
-    <dd id="level">1</dd>
-    <dt>Cleared Lines</dt>
-    <dd id="clearedLines">0</dd>
-    <dt>Elapsed Time</dt>
-    <dd id="elapsedTime">00:00:00</dd>
-    <dt>Game</dt>
-    <dd><button id="startStop">Stop</button><br><button id="togglePause">Pause</button></dd>
-</dl>
+<div id="stats">
+    <canvas id="nextPiece"></canvas>
+
+    <dl>
+        <!--<dt>Status</dt>
+        <dd id="status"></dd>-->
+        <!-- <dt>Next Piece</dt>
+        <dd><canvas id="nextPiece"></canvas></dd> -->
+        <dt>Score</dt>
+        <dd id="score">0</dd>
+        <dt>Highscore</dt>
+        <dd id="highscore">0</dd>
+        <dt>Level</dt>
+        <dd id="level">1</dd>
+        <dt>Cleared Lines</dt>
+        <dd id="clearedLines">0</dd>
+        <dt>Elapsed Time</dt>
+        <dd id="elapsedTime">00:00:00</dd>
+        <!-- <dt>Game</dt>
+        <dd><button id="startStop">Stop</button><br><button id="togglePause">Pause</button></dd> -->
+    </dl>
+
+    <div id="buttons">
+    <button id="togglePause">Pause</button>
+    <button id="startStop">Stop</button>
+    <button id="help">Help</button>
+    </div>
+</div>
 </div>
 
 <div id="controls">
@@ -120,6 +164,25 @@ for (var i = 0, l = els.length; i < l; ++i) {
         elements[el.id] = el;
     }
 }
+
+// elements.game.style.width = document.body.clientWidth + 'px';
+// elements.game.style.height = document.body.clientHeight + 'px';
+
+// elements.game.style.width = window.innerWidth + 'px';
+// elements.game.style.height = window.innerHeight + 'px';
+
+document.body.style.height = window.innerHeight + 'px';
+
+
+var width = elements.game.offsetWidth + 20;
+            var height = elements.game.offsetHeight + 20;
+            var windowWidth = document.body.clientWidth;
+            var windowHeight = document.body.clientHeight;
+            var r = 1;
+            r = Math.min(windowWidth / width, windowHeight / height)
+
+elements.game.style.transform = 'scale(' + r + ')';
+
 
 
 var field = new Field();

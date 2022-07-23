@@ -564,8 +564,7 @@ setupUserBindings = function(game, elements) {
         };
 
 
-        var canvas = elements.field;
-        var ctx = canvas.getContext('2d');
+        var canvas = document;
 
         var startCoords;
         var startTime;
@@ -585,8 +584,6 @@ setupUserBindings = function(game, elements) {
         };
 
         canvas.ontouchstart = function(e) {
-            e.preventDefault();
-
             if (game.state.state !== 'running') {
                 return;
             }
