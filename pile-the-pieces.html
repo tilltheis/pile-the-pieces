@@ -26,9 +26,14 @@
         justify-content: center;
         align-items: center;
         touch-action: none;
+
+        font-family: monospace;
       }
       canvas {
         border: 1px solid black;
+      }
+      #container {
+        position: relative;
       }
       #field,
       #stats {
@@ -45,7 +50,6 @@
         color: #a7a9a7;
         border-left: none;
         margin: 0;
-        font-family: monospace;
         display: flex;
         justify-content: space-around;
         flex-direction: column;
@@ -93,11 +97,28 @@
       #game dt {
         clear: right;
       }
-      #controls,
       #settings {
-        width: 150px;
-        float: left;
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        right: 15px;
+        transform: translateY(-50%);
+
+        color: #a7a9a7;
+        background: #1c1c1c;
+        border: 5px double black;
+
         display: none;
+      }
+      #closeSettings {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+      #movementSettings,
+      #gameSettings {
+        width: 130px;
+        float: left;
       }
       #status {
         width: 200px;
@@ -122,92 +143,108 @@
     </style>
   </head>
   <body>
-    <div id="game">
-      <!--<h2 id="score"></h2>-->
-      <h2 id="status"></h2>
-      <canvas id="field"></canvas>
+    <div id="container">
+      <div id="game">
+        <!--<h2 id="score"></h2>-->
+        <h2 id="status"></h2>
+        <canvas id="field"></canvas>
 
-      <!--<h2 id="statsTitle">Stats</h2>-->
-      <div id="stats">
-        <canvas id="nextPiece"></canvas>
+        <!--<h2 id="statsTitle">Stats</h2>-->
+        <div id="stats">
+          <canvas id="nextPiece"></canvas>
 
-        <dl>
-          <!--<dt>Status</dt>
+          <dl>
+            <!--<dt>Status</dt>
         <dd id="status"></dd>-->
-          <!-- <dt>Next Piece</dt>
+            <!-- <dt>Next Piece</dt>
         <dd><canvas id="nextPiece"></canvas></dd> -->
-          <dt>Score</dt>
-          <dd id="score">0</dd>
-          <dt>Highscore</dt>
-          <dd id="highscore">0</dd>
-          <dt>Level</dt>
-          <dd id="level">1</dd>
-          <dt>Cleared Lines</dt>
-          <dd id="clearedLines">0</dd>
-          <dt>Elapsed Time</dt>
-          <dd id="elapsedTime">00:00:00</dd>
-          <!-- <dt>Game</dt>
+            <dt>Score</dt>
+            <dd id="score">0</dd>
+            <dt>Highscore</dt>
+            <dd id="highscore">0</dd>
+            <dt>Level</dt>
+            <dd id="level">1</dd>
+            <dt>Cleared Lines</dt>
+            <dd id="clearedLines">0</dd>
+            <dt>Elapsed Time</dt>
+            <dd id="elapsedTime">00:00:00</dd>
+            <!-- <dt>Game</dt>
         <dd><button id="startStop">Stop</button><br><button id="togglePause">Pause</button></dd> -->
-        </dl>
+          </dl>
 
-        <div id="buttons">
-          <button id="togglePause">Pause</button>
-          <button id="startStop">Stop</button>
-          <button id="help">Help</button>
+          <div id="buttons">
+            <button id="togglePause">Pause</button>
+            <button id="startStop">Stop</button>
+            <button id="openSettings">Settings</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="controls">
-      <h2>Controls</h2>
+      <div id="settings">
+        <div id="movementSettings">
+          <h2>Controls</h2>
 
-      <select id="keyLayouts">
-        <option id="numpadKeyLayout" value="numpad">Numpad</option>
-        <option id="notebookKeyLayout" value="notebook">Notebook</option>
-        <option id="arrowsKeyLayout" value="arrows">Arrows</option>
-        <option id="wasdKeyLayout" value="wasd">WASD</option>
-        <option id="customKeyLayout" value="custom">Custom</option>
-      </select>
+          <select id="keyLayouts">
+            <option id="numpadKeyLayout" value="numpad">Numpad</option>
+            <option id="notebookKeyLayout" value="notebook">Notebook</option>
+            <option id="arrowsKeyLayout" value="arrows">Arrows</option>
+            <option id="wasdKeyLayout" value="wasd">WASD</option>
+            <option id="customKeyLayout" value="custom">Custom</option>
+          </select>
 
-      <dl>
-        <dt><label for="hardDropKey">Hard Drop</label></dt>
-        <dd>
-          <input id="hardDropKey" value="EMPTY" class="control" size="4" />
-        </dd>
-        <dt><label for="moveDownKey">Soft Drop</label></dt>
-        <dd>
-          <input id="moveDownKey" value="EMPTY" class="control" size="4" />
-        </dd>
-        <dt><label for="moveLeftKey">Move Left</label></dt>
-        <dd>
-          <input id="moveLeftKey" value="EMPTY" class="control" size="4" />
-        </dd>
-        <dt><label for="moveRightKey">Move Right</label></dt>
-        <dd>
-          <input id="moveRightKey" value="EMPTY" class="control" size="4" />
-        </dd>
-        <dt><label for="rotateLeftKey">Rotate Left</label></dt>
-        <dd>
-          <input id="rotateLeftKey" value="EMPTY" class="control" size="4" />
-        </dd>
-        <dt><label for="rotateRightKey">Rotate Right</label></dt>
-        <dd>
-          <input id="rotateRightKey" value="EMPTY" class="control" size="4" />
-        </dd>
-      </dl>
-    </div>
+          <dl>
+            <dt><label for="hardDropKey">Hard Drop</label></dt>
+            <dd>
+              <input id="hardDropKey" value="EMPTY" class="control" size="4" />
+            </dd>
+            <dt><label for="moveDownKey">Soft Drop</label></dt>
+            <dd>
+              <input id="moveDownKey" value="EMPTY" class="control" size="4" />
+            </dd>
+            <dt><label for="moveLeftKey">Move Left</label></dt>
+            <dd>
+              <input id="moveLeftKey" value="EMPTY" class="control" size="4" />
+            </dd>
+            <dt><label for="moveRightKey">Move Right</label></dt>
+            <dd>
+              <input id="moveRightKey" value="EMPTY" class="control" size="4" />
+            </dd>
+            <dt><label for="rotateLeftKey">Rotate Left</label></dt>
+            <dd>
+              <input
+                id="rotateLeftKey"
+                value="EMPTY"
+                class="control"
+                size="4"
+              />
+            </dd>
+            <dt><label for="rotateRightKey">Rotate Right</label></dt>
+            <dd>
+              <input
+                id="rotateRightKey"
+                value="EMPTY"
+                class="control"
+                size="4"
+              />
+            </dd>
+          </dl>
+        </div>
 
-    <div id="settings">
-      <h2>Settings</h2>
+        <div id="gameSettings">
+          <h2>Game</h2>
 
-      <dl>
-        <dt><label for="gameSeed">Game Seed</label></dt>
-        <dd><input id="gameSeed" placeholder="random" size="4" /></dd>
-        <dt><label for="startLevel">Start Level</label></dt>
-        <dd><input id="startLevel" value="1" size="4" /></dd>
-      </dl>
+          <dl>
+            <dt><label for="gameSeed">Game Seed</label></dt>
+            <dd><input id="gameSeed" placeholder="random" size="4" /></dd>
+            <dt><label for="startLevel">Start Level</label></dt>
+            <dd><input id="startLevel" value="1" size="4" /></dd>
+          </dl>
 
-      <button id="resetHighscore">Reset Highscore</button>
+          <button id="resetHighscore">Reset Highscore</button>
+        </div>
+
+        <button id="closeSettings">x</button>
+      </div>
     </div>
 
     <div style="display: none">
@@ -246,12 +283,12 @@
         document.body.style.height = window.innerHeight + "px";
 
         // zoom content to fill screen
-        var width = elements.game.offsetWidth + 20;
-        var height = elements.game.offsetHeight + 20;
+        var width = elements.container.offsetWidth + 20;
+        var height = elements.container.offsetHeight + 20;
         var windowWidth = document.body.clientWidth;
         var windowHeight = document.body.clientHeight;
         var r = Math.min(windowWidth / width, windowHeight / height);
-        elements.game.style.transform = "scale(" + r + ")";
+        elements.container.style.transform = "scale(" + r + ")";
       };
 
       window.onresize = fitToScreen;

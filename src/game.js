@@ -485,6 +485,12 @@ var Game = function(field) {
         eventManager.emit('stateChange');
     };
 
+    this.pause = function() {
+        if (this.state.state == 'running') {
+            this.togglePause();
+        }
+    }
+
 
     var runLoopTimer;
     var runLoop = function() {

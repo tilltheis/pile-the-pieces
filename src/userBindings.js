@@ -469,6 +469,15 @@ setupUserBindings = function(game, elements) {
         game.togglePause();
     }, false);
 
+    elements.openSettings.addEventListener('click', function() {
+        game.pause();
+        elements.settings.style.display = 'block';
+    }, false);
+
+    elements.closeSettings.addEventListener('click', function() {
+        elements.settings.style.display = 'none';
+    }, false);
+
     elements.startLevel.addEventListener('change', function() {
         var num = Math.min(Math.max(parseInt(this.value, 10), 1), 50);
         if (Number.isNaN(num)) num = 1;
@@ -486,7 +495,6 @@ setupUserBindings = function(game, elements) {
         gameState.highscore = 0;
         elements.highscore.innerHTML = '0';
     }, false);
-
 
 
 
