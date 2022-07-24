@@ -1,200 +1,275 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Pile The Pieces</title>
-<style>
-html {
-  box-sizing: border-box;
-}
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-/* html, body { overscroll-behavior: contain; } */
-body { position: relative; margin: 0; background: #242424; display: flex; justify-content: center; align-items: center; touch-action: none; }
-canvas { border: 1px solid black; }
-#field, #stats { height: 410px; border: 5px double black; }
-#field { float: left; width: 200px; }
-#stats { float: left; width: 120px; color: #a7a9a7; border-left: none; margin: 0; font-family: monospace;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    align-items: center;
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Pile The Pieces</title>
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+      /* html, body { overscroll-behavior: contain; } */
+      body {
+        position: relative;
+        margin: 0;
+        background: #242424;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        touch-action: none;
+      }
+      canvas {
+        border: 1px solid black;
+      }
+      #field,
+      #stats {
+        height: 410px;
+        border: 5px double black;
+      }
+      #field {
+        float: left;
+        width: 200px;
+      }
+      #stats {
+        float: left;
+        width: 120px;
+        color: #a7a9a7;
+        border-left: none;
+        margin: 0;
+        font-family: monospace;
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        align-items: center;
 
-    padding: 10px 0;
- }
-#status { text-transform: capitalize; }
-#stats button {
-    width: 80px;
-    height: 25px;
-    background: url(./img/preview.png);
-    color: #aea9a7;
-    font-family: monospace;
-    border: 1px solid black;
-    margin-bottom: 5px;
-    margin-left: 20px;
- }
- #stats button:hover {
+        padding: 10px 0;
+      }
+      #status {
+        text-transform: capitalize;
+      }
+      #stats button {
+        width: 80px;
+        height: 25px;
+        background: url(./img/preview.png);
+        color: #aea9a7;
+        font-family: monospace;
+        border: 1px solid black;
+        margin-bottom: 5px;
+        margin-left: 20px;
+      }
+      #stats button:hover {
         border-color: grey;
- }
- #stats button:active {
-    color: #787573;
- }
+      }
+      #stats button:active {
+        color: #787573;
+      }
 
- #stats button#togglePause {
-    margin-bottom: 15px;
- }
-/*#score { margin: 0; text-align: center; width: 200px; }*/
-/*#statsTitle { margin-top: -30px; margin-left: 203px; }*/
-#game { /*width: 320px; height: 460px;*/ background: #1c1c1c; float: left; position: relative; display: block; /*width: 100vw; height: 100vh;*/ }
-#game dd { margin: 0; padding: 0; float: right; }
-#game dt { clear: right; }
-#controls, #settings { width: 150px; float: left; display: none; }
-#status { width: 200px; position: absolute; left: 1px; top: 158px; background: rgba(0, 0, 0, 0.7); text-align: center; color: #fff; height: 30px; font-size: 30px; padding-top: 4px; border: 1px solid rgba(255, 255, 255, 0.5); border-width: 1px 0; }
-#field { background: url('./img/field.png') no-repeat; }
-#nextPiece { background: url('./img/preview.png'); }
-</style>
-</head>
-<body>
-<div id="game">
-<!--<h2 id="score"></h2>-->
-<h2 id="status"></h2>
-<canvas id="field"></canvas>
+      #stats button#togglePause {
+        margin-bottom: 15px;
+      }
+      /*#score { margin: 0; text-align: center; width: 200px; }*/
+      /*#statsTitle { margin-top: -30px; margin-left: 203px; }*/
+      #game {
+        /*width: 320px; height: 460px;*/
+        background: #1c1c1c;
+        float: left;
+        position: relative;
+        display: block; /*width: 100vw; height: 100vh;*/
+      }
+      #game dd {
+        margin: 0;
+        padding: 0;
+        float: right;
+      }
+      #game dt {
+        clear: right;
+      }
+      #controls,
+      #settings {
+        width: 150px;
+        float: left;
+        display: none;
+      }
+      #status {
+        width: 200px;
+        position: absolute;
+        left: 1px;
+        top: 158px;
+        background: rgba(0, 0, 0, 0.7);
+        text-align: center;
+        color: #fff;
+        height: 30px;
+        font-size: 30px;
+        padding-top: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-width: 1px 0;
+      }
+      #field {
+        background: url("./img/field.png") no-repeat;
+      }
+      #nextPiece {
+        background: url("./img/preview.png");
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game">
+      <!--<h2 id="score"></h2>-->
+      <h2 id="status"></h2>
+      <canvas id="field"></canvas>
 
-<!--<h2 id="statsTitle">Stats</h2>-->
-<div id="stats">
-    <canvas id="nextPiece"></canvas>
+      <!--<h2 id="statsTitle">Stats</h2>-->
+      <div id="stats">
+        <canvas id="nextPiece"></canvas>
 
-    <dl>
-        <!--<dt>Status</dt>
+        <dl>
+          <!--<dt>Status</dt>
         <dd id="status"></dd>-->
-        <!-- <dt>Next Piece</dt>
+          <!-- <dt>Next Piece</dt>
         <dd><canvas id="nextPiece"></canvas></dd> -->
-        <dt>Score</dt>
-        <dd id="score">0</dd>
-        <dt>Highscore</dt>
-        <dd id="highscore">0</dd>
-        <dt>Level</dt>
-        <dd id="level">1</dd>
-        <dt>Cleared Lines</dt>
-        <dd id="clearedLines">0</dd>
-        <dt>Elapsed Time</dt>
-        <dd id="elapsedTime">00:00:00</dd>
-        <!-- <dt>Game</dt>
+          <dt>Score</dt>
+          <dd id="score">0</dd>
+          <dt>Highscore</dt>
+          <dd id="highscore">0</dd>
+          <dt>Level</dt>
+          <dd id="level">1</dd>
+          <dt>Cleared Lines</dt>
+          <dd id="clearedLines">0</dd>
+          <dt>Elapsed Time</dt>
+          <dd id="elapsedTime">00:00:00</dd>
+          <!-- <dt>Game</dt>
         <dd><button id="startStop">Stop</button><br><button id="togglePause">Pause</button></dd> -->
-    </dl>
+        </dl>
 
-    <div id="buttons">
-    <button id="togglePause">Pause</button>
-    <button id="startStop">Stop</button>
-    <button id="help">Help</button>
+        <div id="buttons">
+          <button id="togglePause">Pause</button>
+          <button id="startStop">Stop</button>
+          <button id="help">Help</button>
+        </div>
+      </div>
     </div>
-</div>
-</div>
 
-<div id="controls">
-    <h2>Controls</h2>
+    <div id="controls">
+      <h2>Controls</h2>
 
-    <select id="keyLayouts">
+      <select id="keyLayouts">
         <option id="numpadKeyLayout" value="numpad">Numpad</option>
         <option id="notebookKeyLayout" value="notebook">Notebook</option>
         <option id="arrowsKeyLayout" value="arrows">Arrows</option>
         <option id="wasdKeyLayout" value="wasd">WASD</option>
         <option id="customKeyLayout" value="custom">Custom</option>
-    </select>
-    
-    <dl>
+      </select>
+
+      <dl>
         <dt><label for="hardDropKey">Hard Drop</label></dt>
-        <dd><input id="hardDropKey" value="EMPTY" class="control" size="4"></dd>
+        <dd>
+          <input id="hardDropKey" value="EMPTY" class="control" size="4" />
+        </dd>
         <dt><label for="moveDownKey">Soft Drop</label></dt>
-        <dd><input id="moveDownKey" value="EMPTY" class="control" size="4"></dd>
+        <dd>
+          <input id="moveDownKey" value="EMPTY" class="control" size="4" />
+        </dd>
         <dt><label for="moveLeftKey">Move Left</label></dt>
-        <dd><input id="moveLeftKey" value="EMPTY" class="control" size="4"></dd>
+        <dd>
+          <input id="moveLeftKey" value="EMPTY" class="control" size="4" />
+        </dd>
         <dt><label for="moveRightKey">Move Right</label></dt>
-        <dd><input id="moveRightKey" value="EMPTY" class="control" size="4"></dd>
+        <dd>
+          <input id="moveRightKey" value="EMPTY" class="control" size="4" />
+        </dd>
         <dt><label for="rotateLeftKey">Rotate Left</label></dt>
-        <dd><input id="rotateLeftKey" value="EMPTY" class="control" size="4"></dd>
+        <dd>
+          <input id="rotateLeftKey" value="EMPTY" class="control" size="4" />
+        </dd>
         <dt><label for="rotateRightKey">Rotate Right</label></dt>
-        <dd><input id="rotateRightKey" value="EMPTY" class="control" size="4"></dd>
-    </dl>
-</div>
+        <dd>
+          <input id="rotateRightKey" value="EMPTY" class="control" size="4" />
+        </dd>
+      </dl>
+    </div>
 
-<div id="settings">
-    <h2>Settings</h2>
-    
-    <dl>
+    <div id="settings">
+      <h2>Settings</h2>
+
+      <dl>
         <dt><label for="gameSeed">Game Seed</label></dt>
-        <dd><input id="gameSeed" placeholder="random" size="4"></dd>
+        <dd><input id="gameSeed" placeholder="random" size="4" /></dd>
         <dt><label for="startLevel">Start Level</label></dt>
-        <dd><input id="startLevel" value="1" size="4"></dd>
-    </dl>
+        <dd><input id="startLevel" value="1" size="4" /></dd>
+      </dl>
 
-    <button id="resetHighscore">Reset Highscore</button>
-</div>
+      <button id="resetHighscore">Reset Highscore</button>
+    </div>
 
-<div style="display: none;">
-    <img id="iPieceImg" src="./img/iPiece.png">
-    <img id="jPieceImg" src="./img/jPiece.png">
-    <img id="lPieceImg" src="./img/lPiece.png">
-    <img id="oPieceImg" src="./img/oPiece.png">
-    <img id="sPieceImg" src="./img/sPiece.png">
-    <img id="tPieceImg" src="./img/tPiece.png">
-    <img id="zPieceImg" src="./img/zPiece.png">
-    <img id="shadowPieceImg" src="./img/shadowPiece.png">
-</div>
+    <div style="display: none">
+      <img id="iPieceImg" src="./img/iPiece.png" />
+      <img id="jPieceImg" src="./img/jPiece.png" />
+      <img id="lPieceImg" src="./img/lPiece.png" />
+      <img id="oPieceImg" src="./img/oPiece.png" />
+      <img id="sPieceImg" src="./img/sPiece.png" />
+      <img id="tPieceImg" src="./img/tPiece.png" />
+      <img id="zPieceImg" src="./img/zPiece.png" />
+      <img id="shadowPieceImg" src="./img/shadowPiece.png" />
+    </div>
 
-<script src="./src/rng.js"></script>
-<script src="./src/util.js"></script>
-<script src="./src/eventManager.js"></script>
-<script src="./src/game.js"></script>
-<script src="./src/inputManager.js"></script>
-<script src="./src/gameBindings.js"></script>
-<script src="./src/userBindings.js"></script>
-<script>
-var elements = {};
+    <script src="./src/rng.js"></script>
+    <script src="./src/util.js"></script>
+    <script src="./src/eventManager.js"></script>
+    <script src="./src/game.js"></script>
+    <script src="./src/inputManager.js"></script>
+    <script src="./src/gameBindings.js"></script>
+    <script src="./src/userBindings.js"></script>
+    <script>
+      var elements = {};
 
-var els = document.getElementsByTagName('*');
-var el;
-for (var i = 0, l = els.length; i < l; ++i) {
-    el = els[i];
+      var els = document.getElementsByTagName("*");
+      var el;
+      for (var i = 0, l = els.length; i < l; ++i) {
+        el = els[i];
 
-    if (el.id) {
-        elements[el.id] = el;
-    }
-}
+        if (el.id) {
+          elements[el.id] = el;
+        }
+      }
 
+      var fitToScreen = function () {
+        // fill full screen height to allow vertical centering
+        document.body.style.height = window.innerHeight + "px";
 
-var fitToScreen = function() {
-    // fill full screen height to allow vertical centering
-    document.body.style.height = window.innerHeight + 'px';
+        // zoom content to fill screen
+        var width = elements.game.offsetWidth + 20;
+        var height = elements.game.offsetHeight + 20;
+        var windowWidth = document.body.clientWidth;
+        var windowHeight = document.body.clientHeight;
+        var r = Math.min(windowWidth / width, windowHeight / height);
+        elements.game.style.transform = "scale(" + r + ")";
+      };
 
-    // zoom content to fill screen
-    var width = elements.game.offsetWidth + 20;
-    var height = elements.game.offsetHeight + 20;
-    var windowWidth = document.body.clientWidth;
-    var windowHeight = document.body.clientHeight;
-    var r = Math.min(windowWidth / width, windowHeight / height)
-    elements.game.style.transform = 'scale(' + r + ')';
-}
+      window.onresize = fitToScreen;
+      window.onorientationchange = fitToScreen;
+      fitToScreen();
 
-window.onresize = fitToScreen;
-window.onorientationchange = fitToScreen;
-fitToScreen();
+      var field = new Field();
+      var game = new Game(field);
 
+      setupGameStorage();
+      setupGameBindings(game, field, elements);
+      setupUserStorage();
+      setupUserBindings(game, elements);
 
-var field = new Field();
-var game = new Game(field);
-
-
-setupGameStorage();
-setupGameBindings(game, field, elements);
-setupUserStorage();
-setupUserBindings(game, elements);
-
-game.start(parseInt(localStorage.startLevel, 10), localStorage.gameSeed || null);
-</script>
-
-</body>
+      game.start(
+        parseInt(localStorage.startLevel, 10),
+        localStorage.gameSeed || null
+      );
+    </script>
+  </body>
 </html>
