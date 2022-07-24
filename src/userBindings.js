@@ -479,7 +479,7 @@ setupUserBindings = function(game, elements) {
     }, false);
 
     elements.startLevel.addEventListener('change', function() {
-        var num = Math.min(Math.max(parseInt(this.value, 10), 1), 50);
+        var num = Math.min(Math.max(parseInt(this.value, 10), 1), 21);
         if (Number.isNaN(num)) num = 1;
         this.value = num;
         localStorage.startLevel = num;

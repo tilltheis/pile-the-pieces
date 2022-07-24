@@ -539,7 +539,7 @@ var Game = function(field) {
             state.clearedLines += numFullRows;
 
             var oldLevel = state.level;
-            state.level = startLevel + parseInt(state.clearedLines / 10, 10);
+            state.level = Math.min(21, startLevel + parseInt(state.clearedLines / 10, 10));
 
             if (state.level !== oldLevel) {
                 eventManager.emit('levelUp');
@@ -562,8 +562,10 @@ var Game = function(field) {
 
 
 
+    var gameBoyFps = 59.73;
+    var gameBoyFpsPerLevel = [53, 49, 45, 41, 37, 33, 28, 22, 17, 11, 10, 9, 8, 7, 6, 6, 5, 5, 4, 4, 3];
     var dropIntervalForLevel = function(level) {
-        return 1000 * Math.pow(0.8, level/2);
+        return 1000 * gameBoyFpsPerLevel[Math.min(level, 21) - 1] / gameBoyFps;
     };
 
 
