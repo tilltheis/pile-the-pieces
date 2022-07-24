@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 115 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-miterlimit:10;">
-    <g transform="matrix(1,0,0,1,32.8621,4.45845)">
-        <text x="7.054px" y="4.968px" style="font-family:'Consolas', monospace;font-size:9.75px;fill:rgb(167,169,167);">rotate</text>
+    <g transform="matrix(1,0,0,1,30.8274,4.03222)">
+        <text x="7.054px" y="4.968px" style="font-family:monospace;font-size:13px;fill:rgb(167,169,167);">rotate</text>
     </g>
-    <g transform="matrix(1,0,0,1,39.2248,42.7918)">
-        <text x="7.054px" y="4.968px" style="font-family:'Consolas', monospace;font-size:9.75px;fill:rgb(167,169,167);">move</text>
+    <g transform="matrix(1,0,0,1,36.2398,44.418)">
+        <text x="7.054px" y="4.968px" style="font-family:monospace;font-size:13px;fill:rgb(167,169,167);">move</text>
     </g>
-    <g transform="matrix(1,0,0,1,38.2351,59.2592)">
-        <text x="7.054px" y="4.968px" style="font-family:'Consolas', monospace;font-size:9.75px;fill:rgb(167,169,167);">drop</text>
+    <g transform="matrix(1,0,0,1,36.9166,62.5015)">
+        <text x="7.054px" y="4.968px" style="font-family:monospace;font-size:13px;fill:rgb(167,169,167);">drop</text>
     </g>
     <g transform="matrix(1,0,0,1,55.7451,0.375)">
         <clipPath id="_clip1">
@@ -52,6 +52,13 @@
         <g transform="matrix(-3.70707e-15,0.921686,-55.5258,-1.45196e-14,4595.4,-21.9954)">
             <path d="M87.938,81.378L86.25,82.503L84.563,81.378" style="fill:none;stroke:rgb(167,169,167);stroke-width:0.75px;"/>
             <path d="M86.25,81.985L86.25,82.503" style="fill:none;stroke:rgb(167,169,167);stroke-width:0.75px;stroke-linejoin:round;stroke-miterlimit:1.5;"/>
+        </g>
+    </g>
+    <g transform="matrix(-1.68075e-15,-0.120444,1.08497,8.41331e-14,-4.88569,27.6942)">
+        <path d="M43.125,57.5L14.375,57.5" style="fill:none;"/>
+        <g transform="matrix(6.43818e-13,0.921686,-8.30258,-1.28617e-14,229.933,4.50307)">
+            <path d="M59.188,24.838L57.5,25.963L55.813,24.838" style="fill:none;stroke:rgb(167,169,167);stroke-width:0.75px;"/>
+            <path d="M57.5,22.5L57.5,25.963" style="fill:none;stroke:rgb(167,169,167);stroke-width:0.75px;stroke-linejoin:round;stroke-miterlimit:1.5;"/>
         </g>
     </g>
     <g transform="matrix(-0.926783,0,0,1,112.895,-4.79167)">
