@@ -282,7 +282,6 @@ setupUserBindings = function(game, elements) {
 
     populateOptionsForm();
     loadKeyBindings();
-    game.minDelayOnNewPiece = 5 * bindingOptionsForAction('moveLeft').interval;
 
     
 

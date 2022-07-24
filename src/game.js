@@ -431,8 +431,6 @@ var Game = function(field) {
         currentPiece: null
     };
 
-    this.minDelayOnNewPiece = 0;
-
 
     this.start = function(level, seed) {
         var state = this.state;
@@ -495,7 +493,6 @@ var Game = function(field) {
     var runLoopTimer;
     var runLoop = function() {
         var state = self.state;
-        var delay;
 
         if (!self.state.currentPiece.canMove('down')) {
             var currentPiece = state.currentPiece;
@@ -546,17 +543,11 @@ var Game = function(field) {
             }
 
             insertRandomPiece();
-
-            delay = dropIntervalForLevel(state.level);
-
-            if (delay < self.minDelayOnNewPiece) {
-                delay = self.minDelayOnNewPiece;
-            }
         } else {
             state.currentPiece.move('down');
-            delay = dropIntervalForLevel(state.level);
         }
 
+        var delay = dropIntervalForLevel(state.level);
         runLoopTimer = setTimeout(runLoop, delay);
     };
 
