@@ -625,6 +625,11 @@ setupUserBindings = function(game, elements) {
             }
         };
 
+        canvas.ondblclick = function(e) {
+            // disable touble tap to zoom on ios safari
+            e.preventDefault();
+        }
+
         canvas.ontouchmove = function(e) {
             if (game.state.state !== 'running' || e.touches.length !== 1) {
                 return;
