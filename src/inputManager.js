@@ -56,6 +56,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
     var keyDownListener = function(e) {
+        e.preventDefault();
+
         var obj = keyListeners[e.keyCode];
 
         // can be triggered multiple times (before the keyup event)!
@@ -79,6 +81,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
     var keyUpListener = function(e) {
+        e.preventDefault();
+
         var obj = keyListeners[e.keyCode];
 
         // interval and timer are interchangeable
