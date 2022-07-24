@@ -566,6 +566,7 @@ setupUserBindings = function(game, elements) {
 
         var canvas = document;
 
+        var firstStartTime;
         var startCoords;
         var startTime;
         var isRotation;
@@ -590,7 +591,8 @@ setupUserBindings = function(game, elements) {
 
             if (e.touches.length === 1) {
                 startCoords = [e.touches[0].pageX, e.touches[0].pageY];
-                startTime = new Date();
+                firstStartTime = new Date();
+                startTime = firstStartTime;
                 isRotation = false;
                 lastTouchDir = 'up'; // neutral
                 lastRotatetionDir = undefined;
@@ -602,7 +604,12 @@ setupUserBindings = function(game, elements) {
                 return;
             }
 
-            if (lastTouchDir === 'down' && 0.5 < (startCoords[1]-lastStartCoords[1])/(startTime - lastStartTime)) {
+            // don't accidentally drop current piece when it was meant for the previous piece
+            var aMomentAgo = new Date(new Date().getTime() - 250);
+            if (
+                lastTouchDir === "down" && 0.5 < (startCoords[1] - lastStartCoords[1]) / (startTime - lastStartTime) &&
+                (firstStartTime >= game.state.currentPiece.createdAt || game.state.currentPiece.createdAt < aMomentAgo)
+            ) {
                 actions.hardDrop();
             }
         };

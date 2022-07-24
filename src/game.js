@@ -236,6 +236,7 @@ var Piece = function(field, shape) {
     this.registerCallback = eventManager.connect;
     this.unregisterCallback = eventManager.disconnect;
 
+    this.createdAt = new Date();
 
     this.state = {
         position: {
