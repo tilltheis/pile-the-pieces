@@ -13,7 +13,7 @@ html {
   box-sizing: inherit;
 }
 /* html, body { overscroll-behavior: contain; } */
-body { position: relative; margin: 0; background: #242424; display: flex; justify-content: center; align-items: center; touch-action: none; user-select: none }
+body { position: relative; margin: 0; background: #242424; display: flex; justify-content: center; align-items: center; touch-action: none; }
 canvas { border: 1px solid black; }
 #field, #stats { height: 410px; border: 5px double black; }
 #field { float: left; width: 200px; }
@@ -165,24 +165,23 @@ for (var i = 0, l = els.length; i < l; ++i) {
     }
 }
 
-// elements.game.style.width = document.body.clientWidth + 'px';
-// elements.game.style.height = document.body.clientHeight + 'px';
 
-// elements.game.style.width = window.innerWidth + 'px';
-// elements.game.style.height = window.innerHeight + 'px';
+var fitToScreen = function() {
+    // fill full screen height to allow vertical centering
+    document.body.style.height = window.innerHeight + 'px';
 
-document.body.style.height = window.innerHeight + 'px';
+    // zoom content to fill screen
+    var width = elements.game.offsetWidth + 20;
+    var height = elements.game.offsetHeight + 20;
+    var windowWidth = document.body.clientWidth;
+    var windowHeight = document.body.clientHeight;
+    var r = Math.min(windowWidth / width, windowHeight / height)
+    elements.game.style.transform = 'scale(' + r + ')';
+}
 
-
-var width = elements.game.offsetWidth + 20;
-            var height = elements.game.offsetHeight + 20;
-            var windowWidth = document.body.clientWidth;
-            var windowHeight = document.body.clientHeight;
-            var r = 1;
-            r = Math.min(windowWidth / width, windowHeight / height)
-
-elements.game.style.transform = 'scale(' + r + ')';
-
+window.onresize = fitToScreen;
+window.onorientationchange = fitToScreen;
+fitToScreen();
 
 
 var field = new Field();
