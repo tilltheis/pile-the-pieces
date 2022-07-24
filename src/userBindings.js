@@ -601,13 +601,14 @@ setupUserBindings = function(game, elements) {
                 startCoords = [e.touches[0].pageX, e.touches[0].pageY];
                 firstStartTime = new Date();
                 startTime = firstStartTime;
+                lastStartTime = undefined;
                 isRotation = false;
                 lastTouchDir = 'up'; // neutral
                 lastRotatetionDir = undefined;
             }
         };
 
-        canvas.ontouchend = function(e) {
+        canvas.ontouchend = function() {
             if (game.state.state !== 'running' || isRotation) {
                 return;
             }
@@ -619,6 +620,8 @@ setupUserBindings = function(game, elements) {
                 (firstStartTime >= game.state.currentPiece.createdAt || game.state.currentPiece.createdAt < aMomentAgo)
             ) {
                 actions.hardDrop();
+            } else if (lastStartTime === undefined && firstStartTime >= game.state.currentPiece.createdAt) {
+                doRotation('right');
             }
         };
 
