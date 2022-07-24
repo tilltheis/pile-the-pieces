@@ -140,7 +140,7 @@ var storeKeyLayout = function(layout) {
 // EXPORTS
 
 setupUserStorage = function() {
-    var defaultKeyLayout = 'numpad';
+    var defaultKeyLayout = 'arrows';
 
     // accessing unsaved values may return null (Mozilla) or undefined (Webkit, Opera)
     if (-1 !== [null, undefined].indexOf(localStorage.hardDropKey)) {
