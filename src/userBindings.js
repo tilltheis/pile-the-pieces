@@ -608,7 +608,7 @@ setupUserBindings = function(game, elements) {
         };
 
         canvas.ontouchend = function(e) {
-            if (isRotation) {
+            if (game.state.state !== 'running' || isRotation) {
                 return;
             }
 
@@ -623,7 +623,7 @@ setupUserBindings = function(game, elements) {
         };
 
         canvas.ontouchmove = function(e) {
-            if (e.touches.length !== 1) {
+            if (game.state.state !== 'running' || e.touches.length !== 1) {
                 return;
             }
 
