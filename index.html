@@ -53,13 +53,16 @@
         border-left: none;
         margin: 0;
         display: flex;
-        justify-content: space-around;
         flex-direction: column;
         align-items: center;
 
         padding: 10px 0;
       }
-      #stats button {
+      #buttons {
+        display: flex;
+        justify-content: space-around;
+      }
+      #buttons button {
         width: 80px;
         height: 25px;
         background: url(./img/preview.png);
@@ -67,12 +70,11 @@
         font-family: monospace;
         border: 1px solid black;
         margin-bottom: 5px;
-        margin-left: 20px;
       }
-      #stats button:hover {
+      #buttons button:hover {
         border-color: grey;
       }
-      #stats button:active {
+      #buttons button:active {
         color: #787573;
       }
 
@@ -157,6 +159,12 @@
   </head>
   <body>
     <div id="container">
+      <div id="buttons">
+        <button id="togglePause" istyle="display: none; width: 0; height: 0;">Pause</button>
+        <button id="startStop" istyle="display: none; width: 0; height: 0;">Stop</button>
+        <button id="openSettings" istyle="display: inline;">Settings</button>
+      </div>
+
       <div id="game">
         <!--<h2 id="score"></h2>-->
         <h2 id="status"></h2>
@@ -164,6 +172,7 @@
 
         <!--<h2 id="statsTitle">Stats</h2>-->
         <div id="stats">
+
           <canvas id="nextPiece"></canvas>
 
           <dl>
@@ -184,12 +193,6 @@
             <!-- <dt>Game</dt>
         <dd><button id="startStop">Stop</button><br><button id="togglePause">Pause</button></dd> -->
           </dl>
-
-          <div id="buttons">
-            <button id="togglePause">Pause</button>
-            <button id="startStop">Stop</button>
-            <button id="openSettings">Settings</button>
-          </div>
         </div>
       </div>
 
